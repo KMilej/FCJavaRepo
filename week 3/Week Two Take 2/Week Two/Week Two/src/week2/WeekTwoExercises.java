@@ -72,7 +72,7 @@ public class WeekTwoExercises {
 		ArrayList<String> pupilNames = new ArrayList<>();
 
         // Add 10 names to the list
-        pupilNames.add("John");
+        pupilNames.add("John Milej");
         pupilNames.add("Alice");
         pupilNames.add("Bob");
         pupilNames.add("Emily");
