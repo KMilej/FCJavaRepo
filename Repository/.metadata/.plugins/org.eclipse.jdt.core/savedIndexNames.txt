@@ -1,7 +1,0 @@
-INDEX VERSION 1.134+U:\LEVEL 7 HNC\Java THE GOD\Repository\.metadata\.plugins\org.eclipse.jdt.core
-1602965977.index
-2090482743.index
-1865797976.index
-1322706168.index
-3598086116.index
-875388238.index
