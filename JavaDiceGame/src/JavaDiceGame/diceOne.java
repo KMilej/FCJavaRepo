@@ -1,0 +1,10 @@
+package JavaDiceGame;
+
+public class diceOne {
+	
+	public int roll() {
+		 return (int)(Math.random() * 6) + 1;
+		
+		// this roll just one time
+	}
+}
