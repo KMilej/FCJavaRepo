@@ -1,53 +1,139 @@
 package Core;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Program {
 
 	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		LoginSystem loginSystem = new LoginSystem();
+		List<User> users = loginSystem.getUsers();
+
 		System.out.println("Welcome to the Glencaldy Learning Centre");
 		System.out.println("To see all options please log in");
-		
-		 LoginSystem loginSystem = new LoginSystem();
-		 List<User> users = loginSystem.getUsers();
 
-	        // Przykład logowania
-	        System.out.println("Logging in...");
-	        User loggedInUser = loginSystem.validateLogin("U001", "pass123"); // Przykładowe dane logowania
+		loginSystem.displayAllUsers(); // TEST
+		 while (true) {
+	            System.out.println("\nWelcome to the Learning Centre!");
+	            System.out.println("1. Login");
+	            System.out.println("2. Register");
+	            System.out.println("3. Exit");
+	            System.out.print("Choose an option: ");
 
-	        if (loggedInUser != null) {
-	            System.out.println("Login successful: " + loggedInUser);
+	            int option = scanner.nextInt();
+	            scanner.nextLine(); // Oczyszczenie bufora wejścia
 
-	            // Obsługa na podstawie typu użytkownika
-	            switch (loggedInUser.getAccountType()) {
-	                case FULL_MEMBER:
-	                    System.out.println("Full Member - up to 4 loans allowed.");
-	                    // Dodaj logikę dla Full Member
+	            switch (option) {
+	                case 1:
+	                    System.out.print("Enter User ID: ");
+	                    String userID = scanner.nextLine();
+	                    System.out.print("Enter Password: ");
+	                    String password = scanner.nextLine();
+
+	                    User loggedInUser = loginSystem.validateLogin(userID, password);
+	                    if (loggedInUser != null) {
+	                        System.out.println("Login successful! Welcome, " + loggedInUser.getFirstName() + " " + loggedInUser.getLastName());
+	                        handleUserSession(loggedInUser, loginSystem);
+	                    } else {
+	                        System.out.println("Invalid User ID or Password. Please try again.");
+	                    }
 	                    break;
 
-	                case STAFF_USER:
-	                    System.out.println("Staff Member - up to 6 loans allowed.");
-	                    // Dodaj logikę dla Staff Member
+	                case 2:
+	                    loginSystem.registerUser();
 	                    break;
 
-	                case CASUAL_USER:
-	                    System.out.println("Casual User - can only use items within the Learning Centre.");
-	                    // Dodaj logikę dla Casual User
-	                    break;
-
-	                case ADMIN:
-	                    System.out.println("Admin - Access to all system functionalities.");
-	                    AdminUser admin = (AdminUser) loggedInUser;
-	                    admin.listAllUsers(users);
-	                    admin.addNewUser(users, new User("U005", "pass123", "NewUser", "Example", AccountType.FULL_MEMBER));
+	                case 3:
+	                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
+	                    System.exit(0);
 	                    break;
 
 	                default:
-	                    System.out.println("Unknown account type.");
-	                    break;
+	                    System.out.println("Invalid option. Please choose again.");
 	            }
-	        } else {
-	            System.out.println("Invalid login credentials.");
 	        }
 	    }
+
+	    private static void handleUserSession(User user, LoginSystem loginSystem) {
+	        Scanner scanner = new Scanner(System.in);
+
+	        while (true) {
+	            System.out.println("\nUser Menu - Logged in as: " + user.getFirstName() + " " + user.getLastName());
+	            switch (user.getAccountType()) {
+	                case FULL_MEMBER:
+	                    System.out.println("1. Borrow Item");
+	                    System.out.println("2. View Borrowed Items");
+	                    System.out.println("3. Logout");
+	                    break;
+	                case CASUAL_USER:
+	                    System.out.println("1. Search Catalogue");
+	                    System.out.println("2. Logout");
+	                    break;
+	                case STAFF_USER:
+	                    System.out.println("1. Borrow Item");
+	                    System.out.println("2. View Borrowed Items");
+	                    System.out.println("3. Logout");
+	                    break;
+	                case ADMIN:
+	                    System.out.println("1. List All Users");
+	                    System.out.println("2. Add New User");
+	                    System.out.println("3. Logout");
+	                    break;
+	            }
+	            System.out.print("Choose an option: ");
+	            int choice = scanner.nextInt();
+	            scanner.nextLine(); // Oczyszczenie bufora wejścia
+
+	            switch (user.getAccountType()) {
+	                case FULL_MEMBER:
+	                case STAFF_USER:
+	                    switch (choice) {
+	                        case 1:
+	                            System.out.println("Borrowing items is not implemented yet.");
+	                            break;
+	                        case 2:
+	                            System.out.println("Viewing borrowed items is not implemented yet.");
+	                            break;
+	                        case 3:
+	                            System.out.println("Logging out...");
+	                            return;
+	                        default:
+	                            System.out.println("Invalid option. Please try again.");
+	                    }
+	                    break;
+
+	                case CASUAL_USER:
+	                    switch (choice) {
+	                        case 1:
+	                            System.out.println("Searching catalogue is not implemented yet.");
+	                            break;
+	                        case 2:
+	                            System.out.println("Logging out...");
+	                            return;
+	                        default:
+	                            System.out.println("Invalid option. Please try again.");
+	                    }
+	                    break;
+
+	                case ADMIN:
+	                    AdminUser admin = (AdminUser) user;
+	                    switch (choice) {
+	                        case 1:
+	                            admin.listAllUsers(loginSystem.getUsers());
+	                            break;
+	                        case 2:
+	                            System.out.println("Adding a new user...");
+	                            loginSystem.registerUser();
+	                            break;
+	                        case 3:
+	                            System.out.println("Logging out...");
+	                            return;
+	                        default:
+	                            System.out.println("Invalid option. Please try again.");
+	                    }
+	                    break;
+	            }
+	        }
+	}
 }
