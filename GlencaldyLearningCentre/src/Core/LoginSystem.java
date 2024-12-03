@@ -1,5 +1,11 @@
 package Core;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,8 +13,19 @@ import java.util.Scanner;
 public class LoginSystem {
 	
 	 private List<User> users = new ArrayList<>();
-
+	 private static final String GlencaldyUsers = "GlencaldyUsers.dat";
+	 
 	 public LoginSystem() {
+	        // Ładowanie użytkowników z pliku
+	        loadUsersFromFile();
+	        if (users.isEmpty()) {
+	            // Jeśli brak danych w pliku, dodajemy użytkowników domyślnych
+	            addDefaultUsers();
+	            saveUsersToFile();
+	        }
+	    }
+
+	  private void addDefaultUsers() {
 		    // Dodanie przykładowych użytkowników
 		    users.add(new AdminUser("admin", "admin123", "Admin", "User"));
 		    users.add(new User("jdoe", "pass123", "John", "Doe", AccountType.FULL_MEMBER));
@@ -21,10 +38,32 @@ public class LoginSystem {
 		    users.add(new User("jwilson", "pass123", "James", "Wilson", AccountType.STAFF_USER));
 		    users.add(new User("swalker", "pass123", "Sophia", "Walker", AccountType.STAFF_USER));
 		}
+	 
+	 public void saveUsersToFile() {
+	        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GlencaldyUsers))) {
+	            oos.writeObject(users);
+	            System.out.println("Users saved to file.");
+	        } catch (IOException e) {
+	            System.out.println("Error saving users: " + e.getMessage());
+	        }
+	    }
 
+	    @SuppressWarnings("unchecked")
+	    public void loadUsersFromFile() {
+	        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GlencaldyUsers))) {
+	            users = (List<User>) ois.readObject();
+	            System.out.println("Users loaded from file.");
+	        } catch (FileNotFoundException e) {
+	            System.out.println("No user file found. Default users will be created.");
+	        } catch (IOException | ClassNotFoundException e) {
+	            System.out.println("Error loading users: " + e.getMessage());
+	        }
+	    }
+
+	 
 	 public User validateLogin(String username, String password) {
 		    for (User user : users) {
-		        if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+		        if (user.getUsername().equals(username) && user.getPassword().equals(password)) { // Wrażliwe na wielkość liter
 		            return user;
 		        }
 		    }
@@ -42,9 +81,9 @@ public class LoginSystem {
 	        String username = scanner.nextLine();
 	        
 	        for (User user : users) {
-	            if (user.getUsername().equals(username)) {
-	                System.out.println("Username already exists. Please choose a different username.");
-	                return;
+	            if (user.getUsername().equalsIgnoreCase(username)) { // Porównanie niezależne od wielkości liter
+	                System.out.println("Username already exists (case-insensitive). Please choose a different username.");
+	                return; // Przerwanie rejestracji
 	            }
 	        }
 	        

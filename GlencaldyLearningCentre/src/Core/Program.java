@@ -1,5 +1,6 @@
 package Core;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,8 +22,8 @@ public class Program {
 	            System.out.println("3. Exit");
 	            System.out.print("Choose an option: ");
 
-	            int option = scanner.nextInt();
-	            scanner.nextLine(); // Oczyszczenie bufora wejścia
+	            int option = getIntInput(scanner, "Choose an option: ");
+	          //  scanner.nextLine(); // Oczyszczenie bufora wejścia
 
 	            switch (option) {
 	                case 1:
@@ -45,6 +46,7 @@ public class Program {
 	                    break;
 
 	                case 3:
+	                	loginSystem.saveUsersToFile(); // Zapisujemy listę użytkowników przed wyjściem
 	                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
 	                    System.exit(0);
 	                    break;
@@ -136,4 +138,15 @@ public class Program {
 	            }
 	        }
 	}
+	    private static int getIntInput(Scanner scanner, String prompt) {
+	        while (true) {
+	            System.out.print(prompt);
+	            try {
+	                return scanner.nextInt();
+	            } catch (InputMismatchException e) {
+	                System.out.println("Invalid input. Please enter a number.");
+	                scanner.nextLine(); // Oczyszczenie bufora wejścia
+	            }
+	        }
+	    }
 }

@@ -1,8 +1,10 @@
 package Core;
 
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class User {
+public class User implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static int idCounter = 1;
 	private String userID;
 	private String username;

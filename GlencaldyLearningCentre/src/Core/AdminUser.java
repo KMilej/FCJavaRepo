@@ -3,6 +3,8 @@ package Core;
 import java.util.List;
 
 class AdminUser extends User {
+	private static final long serialVersionUID = 1L;
+	
     public AdminUser(String username, String password, String firstName, String lastName) {
         super(username, password, firstName, lastName, AccountType.ADMIN);
     }
