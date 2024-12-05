@@ -1,30 +1,55 @@
 package Core;
 
 public class StockItem {
-    private String stockID;
+    private String id;
     private String title;
-    private String type;
+    private int quantity;
+    private StockType type; // Enum field for stock type
 
-    public StockItem(String stockID, String title, String type) {
-        this.stockID = stockID;
+    // Constructor
+    public StockItem(String id, String title, int quantity, StockType type) {
+        this.id = id;
         this.title = title;
+        this.quantity = quantity;
         this.type = type;
     }
 
-    public String getStockID() {
-        return stockID;
+    // Getters and Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getType() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public StockType getType() {
         return type;
     }
 
+    public void setType(StockType type) {
+        this.type = type;
+    }
+
+    // toString method
     @Override
     public String toString() {
-        return title + " (ID: " + stockID + ", Type: " + type + ")";
+        return "Type: " + type + ", ID: " + id + ", Title: " + title + ", Quantity: " + quantity;
     }
 }

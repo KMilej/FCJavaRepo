@@ -10,7 +10,29 @@ public class Program {
 		Scanner scanner = new Scanner(System.in);
 		LoginSystem loginSystem = new LoginSystem();
 		List<User> users = loginSystem.getUsers();
+		
+		
+		 Catalog catalog = new Catalog();
 
+	        // Inicjalizacja danych
+	        catalog.initializeStock();
+
+	        // Pobranie i wyświetlenie listy
+	        List<StockItem> stockList = catalog.getStockList();
+	        for (StockItem item : stockList) {
+	            System.out.println(item);
+	        }
+
+	        // Przykład wyszukiwania po ID
+	        StockItem foundItem = catalog.findById("V002");
+	        if (foundItem != null) {
+	            System.out.println("Znaleziono przedmiot: " + foundItem);
+	        } else {
+	            System.out.println("Nie znaleziono przedmiotu o podanym ID.");
+	        }
+		
+		
+		
 		System.out.println("Welcome to the Glencaldy Learning Centre");
 		System.out.println("To see all options please log in");
 
