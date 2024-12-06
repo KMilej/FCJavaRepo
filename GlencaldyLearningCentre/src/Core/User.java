@@ -1,35 +1,52 @@
 package Core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class User implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private static int idCounter = 1;
-	private String userID;
-	private String username;
+    private static final long serialVersionUID = 1L;
+    private String userID;
+    private String username;
     private String password;
     private String firstName;
     private String lastName;
-    private AccountType accountType; // Nowy atrybut
+    private AccountType accountType;
+    private List<String> loginHistory; // Historia logowań
 
-    public User(String username ,String password, String firstName, String lastName, AccountType accountType) {
-        this.userID = generateUserID();
+    public User(String username, String password, String firstName, String lastName, AccountType accountType, String userID) {
+        this.userID = userID;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.accountType = accountType;
+        this.loginHistory = new ArrayList<>();
+    }
+    
+    public void addLoginRecord(String timestamp) {
+    	if (loginHistory == null) {
+            loginHistory = new ArrayList<>(); // Zainicjalizuj, jeśli jest null
+        }
+        loginHistory.add(timestamp);
     }
 
-    private String generateUserID() {
-        return "U" + String.format("%04d", idCounter++); // Generuje ID w formacie np. U0001, U0002
+    public void viewLoginHistory() {
+        System.out.println("\nLogin History:");
+        if (loginHistory.isEmpty()) {
+            System.out.println("No login history available.");
+        } else {
+            for (String record : loginHistory) {
+                System.out.println(record);
+            }
+        }
     }
 
     public String getUserID() {
         return userID;
     }
-    
+
     public String getUsername() {
         return username;
     }
@@ -55,5 +72,28 @@ public class User implements Serializable {
         return firstName + " " + lastName + " (Username: " + username + ", ID: " + userID + ", Type: " + accountType + ")";
     }
     
-  
+    public void changePassword() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your current password: ");
+        String currentPassword = scanner.nextLine();
+
+        if (!this.password.equals(currentPassword)) {
+            System.out.println("Incorrect password. Please try again.");
+            return;
+        }
+
+        System.out.print("Enter your new password: ");
+        String newPassword = scanner.nextLine();
+
+        System.out.print("Confirm your new password: ");
+        String confirmPassword = scanner.nextLine();
+
+        if (!newPassword.equals(confirmPassword)) {
+            System.out.println("Passwords do not match. Please try again.");
+            return;
+        }
+
+        this.password = newPassword;
+        System.out.println("Your password has been successfully updated.");
+    }
 }
