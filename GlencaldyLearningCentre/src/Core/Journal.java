@@ -4,7 +4,7 @@ public class Journal extends StockItem {
     private String author;
 
     public Journal(String id, String title, int quantity, String author) {
-        super(id, title, quantity, StockType.BOOK); // Use StockType enum
+        super(id, title, quantity, StockType.JOURNAL); // Use StockType enum
         this.author = author;
     }
 
