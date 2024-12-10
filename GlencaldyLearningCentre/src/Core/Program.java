@@ -256,11 +256,11 @@ public class Program {
 	                        user.changePassword();
 	                        break;
 	                    case 3:
-	                        System.out.println("Logging out...");
-	                        loginSystem.saveUsersToFile();
+	                    	user.viewLoginHistory(); // Wyświetl historię logowania	                        
 	                        return;
 	                    case 4:
-		                    user.viewLoginHistory(); // Wyświetl historię logowania
+	                    	System.out.println("Logging out...");
+	                        loginSystem.saveUsersToFile();
 		                    break;
 	                    default:
 	                        System.out.println("Invalid option. Please try again.");
@@ -307,12 +307,12 @@ public class Program {
 
 	                case 5:
 	                    System.out.println("\nAdding a new stock item...");
-	                    
+	                    catalogManager.addNewStockItem(scanner);
 	                    break;
 
 	                case 6:
 	                    System.out.println("\nEditing an existing stock item...");
-	                    
+	                    catalogManager.editExistingStockItem(scanner);
 	                    break;
 
 	                case 7:

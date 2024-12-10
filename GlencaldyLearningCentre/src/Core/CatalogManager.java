@@ -112,6 +112,159 @@ public class CatalogManager {
                 throw new IllegalArgumentException("Unsupported stock type: " + type);
         }
     }
+    
+    public void addNewStockItem(Scanner scanner) {
+        System.out.println("\n=== Add New Stock Item ===");
+        System.out.println("Choose Stock Type: ");
+        System.out.println("1. Book");
+        System.out.println("2. Journal");
+        System.out.println("3. Video");
+        System.out.println("4. Compact Disc");
+        System.out.print("Enter your choice: ");
+        
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Clear input buffer
+
+        System.out.print("Enter Title: ");
+        String title = scanner.nextLine();
+
+        System.out.print("Enter Quantity: ");
+        int quantity = scanner.nextInt();
+        scanner.nextLine(); // Clear input buffer
+
+        Object additionalInfo = null;
+        StockType type = null;
+
+        switch (choice) {
+            case 1:
+                type = StockType.BOOK;
+                System.out.print("Enter Author: ");
+                additionalInfo = scanner.nextLine();
+                break;
+            case 2:
+                type = StockType.JOURNAL;
+                System.out.print("Enter Author: ");
+                additionalInfo = scanner.nextLine();
+                break;
+            case 3:
+                type = StockType.VIDEO;
+                System.out.print("Enter Duration (in minutes): ");
+                additionalInfo = scanner.nextInt();
+                scanner.nextLine(); // Clear input buffer
+                break;
+            case 4:
+                type = StockType.COMPACT_DISC;
+                System.out.print("Enter Duration (in minutes): ");
+                additionalInfo = scanner.nextInt();
+                scanner.nextLine(); // Clear input buffer
+                break;
+            default:
+                System.out.println("Invalid choice. Returning to admin menu.");
+                return;
+        }
+
+        try {
+            StockItem newItem = createNewStockItem(title, quantity, type, additionalInfo);
+            catalog.getStockList().add(newItem);
+            saveStockToFile();
+            System.out.println("New stock item added successfully: " + newItem);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error creating stock item: " + e.getMessage());
+        }
+    }
+    
+    public void editExistingStockItem(Scanner scanner) {
+        System.out.println("\n=== Edit Existing Stock Item ===");
+        System.out.print("Enter the ID of the item to edit: ");
+        String itemId = scanner.nextLine();
+
+        // Znajdź element w katalogu
+        StockItem itemToEdit = catalog.getStockList().stream()
+                .filter(item -> item.getId().equalsIgnoreCase(itemId))
+                .findFirst()
+                .orElse(null);
+
+        if (itemToEdit == null) {
+            System.out.println("Item with ID " + itemId + " not found.");
+            return;
+        }
+
+        System.out.println("Editing item: " + itemToEdit);
+        System.out.println("What would you like to edit?");
+        System.out.println("1. Title");
+        System.out.println("2. Quantity");
+
+        // Specyficzne opcje w zależności od typu
+        if (itemToEdit instanceof Book) {
+            System.out.println("3. Author");
+        } else if (itemToEdit instanceof Journal) {
+            System.out.println("3. Author");
+        } else if (itemToEdit instanceof Video) {
+            System.out.println("3. Duration (in minutes)");
+        } else if (itemToEdit instanceof CompactDiscs) {
+            System.out.println("3. Duration (in minutes)");
+        }
+
+        System.out.print("Choose an option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Clear input buffer
+
+        switch (choice) {
+            case 1:
+                System.out.println("Current Title: " + itemToEdit.getTitle());
+                System.out.print("Enter new Title: ");
+                String newTitle = scanner.nextLine();
+                itemToEdit.setTitle(newTitle);
+                break;
+
+            case 2:
+                System.out.println("Current Quantity: " + itemToEdit.getQuantity());
+                System.out.print("Enter new Quantity: ");
+                int newQuantity = scanner.nextInt();
+                scanner.nextLine(); // Clear input buffer
+                itemToEdit.setQuantity(newQuantity);
+                break;
+
+            case 3:
+                if (itemToEdit instanceof Book) {
+                    Book book = (Book) itemToEdit;
+                    System.out.println("Current Author: " + book.getAuthor());
+                    System.out.print("Enter new Author: ");
+                    String newAuthor = scanner.nextLine();
+                    book.setAuthor(newAuthor);
+                } else if (itemToEdit instanceof Journal) {
+                    Journal journal = (Journal) itemToEdit;
+                    System.out.println("Current Author: " + journal.getAuthor());
+                    System.out.print("Enter new Author: ");
+                    String newAuthor = scanner.nextLine();
+                    journal.setAuthor(newAuthor);
+                } else if (itemToEdit instanceof Video) {
+                    Video video = (Video) itemToEdit;
+                    System.out.println("Current Duration: " + video.getDuration());
+                    System.out.print("Enter new Duration (in minutes): ");
+                    int newDuration = scanner.nextInt();
+                    scanner.nextLine(); // Clear input buffer
+                    video.setDuration(newDuration);
+                } else if (itemToEdit instanceof CompactDiscs) {
+                    CompactDiscs cd = (CompactDiscs) itemToEdit;
+                    System.out.println("Current Duration: " + cd.getDuration());
+                    System.out.print("Enter new Duration (in minutes): ");
+                    int newDuration = scanner.nextInt();
+                    scanner.nextLine(); // Clear input buffer
+                    cd.setDuration(newDuration);
+                } else {
+                    System.out.println("Invalid option for this item type.");
+                }
+                break;
+
+            default:
+                System.out.println("Invalid option. Returning to admin menu.");
+                return;
+        }
+
+        saveStockToFile();
+        System.out.println("Item updated successfully: " + itemToEdit);
+    }
 
     private String generateUniqueStockID(StockType type) {
         maxId++;
