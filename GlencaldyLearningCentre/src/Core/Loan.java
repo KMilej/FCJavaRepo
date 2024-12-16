@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Loan implements Serializable {
+
+    /* PROPERTIES */
     private static final long serialVersionUID = 1L;
     private String loanId;            // Unique ID for the loan
     private String userId;            // ID of the user borrowing the item
@@ -24,6 +26,7 @@ public class Loan implements Serializable {
     private LocalDateTime loanDate;   // Date when the loan was created
     private LocalDateTime returnDate; // Expected return date
 
+    /* METHODS */
     public Loan(String loanId, String userId, StockItem borrowedItem, LocalDateTime returnDate) {
         this.loanId = loanId;
         this.userId = userId;
@@ -32,31 +35,37 @@ public class Loan implements Serializable {
         this.returnDate = returnDate;
     }
 
-    // Getters and Setters
+    // Gets the loan ID.
     public String getLoanId() {
         return loanId;
     }
 
+    // Gets the user ID associated with the loan.
     public String getUserId() {
         return userId;
     }
 
+    // Gets the borrowed item.
     public StockItem getBorrowedItem() {
         return borrowedItem;
     }
 
+    // Gets the loan date.
     public LocalDateTime getLoanDate() {
         return loanDate;
     }
 
+    // Gets the return date.
     public LocalDateTime getReturnDate() {
         return returnDate;
     }
 
+    // Sets a new return date.
     public void setReturnDate(LocalDateTime returnDate) {
         this.returnDate = returnDate;
     }
 
+    // Returns a string representation of the loan details.
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");

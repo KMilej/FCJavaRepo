@@ -8,7 +8,7 @@
 
 // RESERVATION MANAGER CLASS DEFINITION
 
-//This class contains methods for managing reservations, including reserving items, displaying user-specific reservations, and viewing all reservations.
+// This class contains methods for managing reservations, including reserving items, displaying user-specific reservations, and viewing all reservations.
 
 
 package Core;
@@ -19,9 +19,14 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class ReservationManager {
+
+    /* PROPERTIES */
     private List<Reservation> reservations = new ArrayList<>();
     private int reservationCounter = 0; // Counter for generating unique reservation IDs
 
+    /* METHODS */
+
+    // Allows a user to reserve an item from the catalog.
     public void reserveItem(Scanner scanner, User user, CatalogManager catalogManager) {
         System.out.print("Enter the title of the item to reserve: ");
         String title = scanner.nextLine();
@@ -37,7 +42,7 @@ public class ReservationManager {
             System.out.println((i + 1) + ". " + foundItems.get(i));
         }
 
-        System.out.print("how many do you want to reserve: ");
+        System.out.print("Choose an item from the list and type number: ");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Clear buffer
 
@@ -70,6 +75,7 @@ public class ReservationManager {
         System.out.println("Item reserved successfully: " + newReservation);
     }
 
+    // Displays all reservations made by a specific user.
     public void displayReservations(User user) {
         System.out.println("\n=== Reservation History ===");
         List<Reservation> userReservations = reservations.stream()
@@ -83,6 +89,7 @@ public class ReservationManager {
         }
     }
 
+    // Displays all reservations in the system.
     public void displayAllReservations() {
         System.out.println("\n=== All Reservations ===");
         if (reservations.isEmpty()) {

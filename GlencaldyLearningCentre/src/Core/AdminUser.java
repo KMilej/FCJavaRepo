@@ -15,25 +15,31 @@ package Core;
 import java.util.List;
 
 class AdminUser extends User {
-	private static final long serialVersionUID = 1L;
-	
+    
+    /* PROPERTIES */
+    private static final long serialVersionUID = 1L;
+    
+    /* METHODS */
     public AdminUser(String username, String password, String firstName, String lastName, String userID) {
         super(username, password, firstName, lastName, AccountType.ADMIN, userID);
     }
 
+    // Adds a new user to the system.
     public void addNewUser(List<User> users, User newUser) {
         users.add(newUser);
         System.out.println("User added: " + newUser);
     }
 
+    // Lists all users in the system.
     public void listAllUsers(List<User> users) {
         System.out.println("\nList of all users:");
         for (User user : users) {
             System.out.println(user);
         }
     }
+
+    // Deletes a user with the given userID from the system.
     public void deleteUser(List<User> users, String userID) {
-    	
         User userToDelete = null;
 
         for (User user : users) {

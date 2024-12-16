@@ -8,8 +8,7 @@
 
 // USER CLASS DEFINITION
 
-//This class contains the structure and behavior for a user, including attributes like username, password, account type, login history, and methods for managing user actions such as changing passwords and viewing login history.
-
+// This class contains the structure and behavior for a user, including attributes like username, password, account type, login history, and methods for managing user actions such as changing passwords and viewing login history.
 
 package Core;
 
@@ -19,94 +18,112 @@ import java.util.List;
 import java.util.Scanner;
 
 public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String userID;
-    private String username;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private AccountType accountType;
-    private List<String> loginHistory; // Login History 
 
-    public User(String username, String password, String firstName, String lastName, AccountType accountType, String userID) {
-        this.userID = userID;
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.accountType = accountType;
-        this.loginHistory = new ArrayList<>();
-    }
-    
-    public void addLoginRecord(String timestamp) {
-    	if (loginHistory == null) {
-            loginHistory = new ArrayList<>(); // Zainicjalizuj, jeśli jest null
-        }
-        loginHistory.add(timestamp);
-    }
+	/* PROPERTIES */
+	private static final long serialVersionUID = 1L;
+	private String userID;
+	private String username;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private AccountType accountType;
+	private List<String> loginHistory; // Login History
+	Scanner scanner = new Scanner(System.in);
 
-    public void viewLoginHistory() {
-        System.out.println("\nLogin History:");
-        if (loginHistory.isEmpty()) {
-            System.out.println("No login history available.");
-        } else {
-            for (String record : loginHistory) {
-                System.out.println(record);
-            }
-        }
-    }
+	/* METHODS */
 
-    public String getUserID() {
-        return userID;
-    }
+	// Constructor
+	public User(String username, String password, String firstName, String lastName, AccountType accountType,
+			String userID) {
+		this.userID = userID;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.accountType = accountType;
+		this.loginHistory = new ArrayList<>();
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	// Adds a login record to the user's history.
+	public void addLoginRecord(String timestamp) {
+		if (loginHistory == null) {
+			loginHistory = new ArrayList<>(); // Initialize if null
+		}
+		loginHistory.add(timestamp);
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	// Displays the user's login history.
+	public void viewLoginHistory() {
+		System.out.println("\nLogin History:");
+		if (loginHistory.isEmpty()) {
+			System.out.println("No login history available.");
+		} else {
+			for (String record : loginHistory) {
+				System.out.println(record);
+			}
+		}
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	// Gets the user's ID.
+	public String getUserID() {
+		return userID;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	// Gets the username.
+	public String getUsername() {
+		return username;
+	}
 
-    public AccountType getAccountType() {
-        return accountType;
-    }
+	// Gets the user's password.
+	public String getPassword() {
+		return password;
+	}
 
-    @Override
-    public String toString() {
-        return firstName + " " + lastName + " (Username: " + username + ", ID: " + userID + ", Type: " + accountType + ")";
-    }
-    
-    public void changePassword() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your current password: ");
-        String currentPassword = scanner.nextLine();
+	// Gets the first name.
+	public String getFirstName() {
+		return firstName;
+	}
 
-        if (!this.password.equals(currentPassword)) {
-            System.out.println("Incorrect password. Please try again.");
-            return;
-        }
+	// Gets the last name.
+	public String getLastName() {
+		return lastName;
+	}
 
-        System.out.print("Enter your new password: ");
-        String newPassword = scanner.nextLine();
+	// Gets the account type.
+	public AccountType getAccountType() {
+		return accountType;
+	}
 
-        System.out.print("Confirm your new password: ");
-        String confirmPassword = scanner.nextLine();
+	// Changes the user's password.
+	public void changePassword(Scanner scanner) {
+	    System.out.print("Enter your current password: ");
+	    String currentPassword = scanner.nextLine();
 
-        if (!newPassword.equals(confirmPassword)) {
-            System.out.println("Passwords do not match. Please try again.");
-            return;
-        }
+	    if (!this.password.equals(currentPassword)) {
+	        System.out.println("Incorrect password. Please try again.");
+	        return;
+	    }
 
-        this.password = newPassword;
-        System.out.println("Your password has been successfully updated.");
-    }
+	    System.out.print("Enter your new password: ");
+	    String newPassword = scanner.nextLine();
+
+	    System.out.print("Confirm your new password: ");
+	    String confirmPassword = scanner.nextLine();
+
+	    if (!newPassword.equals(confirmPassword)) {
+	        System.out.println("Passwords do not match. Please try again.");
+	        return;
+	    }
+
+	    this.password = newPassword;
+	    System.out.println("Your password has been successfully updated.");
+	}
+	
+
+	// Returns a string representation of the user.
+	@Override
+	public String toString() {
+		return firstName + " " + lastName + " (Username: " + username + ", ID: " + userID + ", Type: " + accountType
+				+ ")";
+	}
 }

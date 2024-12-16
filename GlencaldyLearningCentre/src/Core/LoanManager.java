@@ -1,3 +1,19 @@
+// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// LOAN MANAGER CLASS DEFINITION
+
+// This class is responsible for managing loans in the Glencaldy Learning Centre system.
+// It provides functionality for creating new loans, checking loan history for users, 
+// and displaying all active loans. The class ensures that stock items are only loaned if 
+// they are available in sufficient quantity and manages the relationship between users 
+// and their borrowed items.
+
 package Core;
 
 import java.time.LocalDateTime;
@@ -6,14 +22,18 @@ import java.util.List;
 import java.util.Scanner;
 
 public class LoanManager {
+
+    /* PROPERTIES */
     private List<Loan> loans = new ArrayList<>();
     private int loanCounter = 0; // Counter for generating unique loan IDs
 
-    
+    /* METHODS */
+
+    // Handles the creation of a new loan.
     public void handleLoanCreation(LoanManager loanManager, CatalogManager catalogManager, LoginSystem loginSystem, Scanner scanner) {
         System.out.println("\n=== Create a New Loan ===");
 
-        // Step 1: Ask for Username
+        // Ask for Username
         System.out.print("Enter the username of the user: ");
         String username = scanner.nextLine();
 
@@ -27,7 +47,7 @@ public class LoanManager {
             return;
         }
 
-        // Step 2: Ask for the book title
+        // Ask for the book title
         System.out.print("Enter the title of the book to loan: ");
         String title = scanner.nextLine();
 
@@ -44,7 +64,7 @@ public class LoanManager {
             System.out.println((i + 1) + ". " + foundItems.get(i));
         }
 
-        System.out.print("how many quantity (1) most of time: ");
+        System.out.print("Choose an item (1): ");
         int choice = scanner.nextInt();
         scanner.nextLine(); // Clear input buffer
 
@@ -55,13 +75,13 @@ public class LoanManager {
 
         StockItem selectedItem = foundItems.get(choice - 1);
 
-        // Step 3: Check stock availability
+        // Check stock availability
         if (selectedItem.getQuantity() <= 0) {
             System.out.println("This item is out of stock and cannot be loaned.");
             return;
         }
 
-        // Step 4: Confirm loan
+        // Confirm loan
         System.out.print("Do you want to loan this item to " + user.getUsername() + "? (y/n): ");
         String confirmation = scanner.nextLine().trim().toLowerCase();
 
@@ -70,8 +90,8 @@ public class LoanManager {
             return;
         }
 
-        // Step 5: Create Loan
-        LocalDateTime returnDate = LocalDateTime.now().plusWeeks(2); // Example: 2 weeks loan period
+        // Create Loan
+        LocalDateTime returnDate = LocalDateTime.now().plusWeeks(2); // 2 weeks loan period
         Loan newLoan = loanManager.createLoan(user.getUserID(), selectedItem, returnDate);
 
         // Reduce quantity in stock
@@ -81,6 +101,7 @@ public class LoanManager {
         System.out.println("Loan Details: " + newLoan);
     }
 
+    // Creates a new loan and adds it to the list of loans.
     public Loan createLoan(String userId, StockItem item, LocalDateTime returnDate) {
         String loanId = "L" + (++loanCounter);
         Loan newLoan = new Loan(loanId, userId, item, returnDate);
@@ -92,6 +113,7 @@ public class LoanManager {
         return newLoan;
     }
 
+    // Retrieves all loans for a specific user.
     public List<Loan> getLoansForUser(String userId) {
         List<Loan> userLoans = new ArrayList<>();
         for (Loan loan : loans) {
@@ -102,6 +124,7 @@ public class LoanManager {
         return userLoans;
     }
 
+    // Displays all active loans.
     public void displayAllLoans() {
         if (loans.isEmpty()) {
             System.out.println("No loans found.");
@@ -111,7 +134,8 @@ public class LoanManager {
             }
         }
     }
-    
+
+    // Displays loan history for a specific user.
     public void displayLoanHistoryForUser(String userId) {
         System.out.println("\n=== Loan History for User: " + userId + " ===");
         List<Loan> userLoans = getLoansForUser(userId);

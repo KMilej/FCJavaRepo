@@ -8,30 +8,27 @@
 
 // CATALOG MANAGER CLASS DEFINITION
 
-// This class contains
+// The CatalogManager class handles the management of the catalog in the library system.
+// It supports loading, saving, and managing stock items such as books, journals, videos, and compact discs.
 
 package Core;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CatalogManager {
+
+    /* PROPERTIES */
     private Catalog catalog;
     private static final String STOCK_DATABASE = "stockDataBase.dat";
     private int maxId = 0; // For generating unique IDs
 
+    /* METHODS */
     public CatalogManager() {
         this.catalog = new Catalog();
         System.out.println("Loading catalog from file...");
-        
-        // Spróbuj załadować dane z pliku
+
         if (!loadStockFromFile()) {
             System.out.println("No existing catalog found. Initializing test data...");
             initializeStock();
@@ -43,6 +40,7 @@ public class CatalogManager {
         System.out.println("Current catalog size: " + catalog.getStockList().size());
     }
 
+    // Initializes the catalog with test data.
     public void initializeStock() {
         catalog.getStockList().add(createNewStockItem("Java Programming", 10, StockType.BOOK, "John Smith"));
         catalog.getStockList().add(createNewStockItem("Effective Java", 7, StockType.BOOK, "Joshua Bloch"));
@@ -59,13 +57,12 @@ public class CatalogManager {
         catalog.getStockList().add(createNewStockItem("Rock Classics", 25, StockType.COMPACT_DISC, 70));
         catalog.getStockList().add(createNewStockItem("Pop Hits 2023", 20, StockType.COMPACT_DISC, 60));
         catalog.getStockList().add(createNewStockItem("Classical Masterpieces", 18, StockType.COMPACT_DISC, 80));
-        
+
         System.out.println("Items added during initialization: " + catalog.getStockList().size());
         saveStockToFile();
     }
 
-
-    
+    // Displays all stock items in the catalog.
     public void displayCatalog() {
         System.out.println("\n=== Catalog ===");
         List<StockItem> stockList = catalog.getStockList();
@@ -78,16 +75,19 @@ public class CatalogManager {
         }
     }
 
+    // Searches for stock items by title and returns a list of matches.
     public List<StockItem> searchByTitle(String title) {
         return catalog.getStockList().stream()
                 .filter(item -> item.getTitle().toLowerCase().contains(title.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
+    // Adds a new stock item to the catalog.
     public void addItem(StockItem item) {
         catalog.getStockList().add(item);
     }
 
+    // Creates a new stock item based on the provided parameters.
     public StockItem createNewStockItem(String title, int quantity, StockType type, Object additionalInfo) {
         String id = generateUniqueStockID(type);
 
@@ -124,7 +124,8 @@ public class CatalogManager {
                 throw new IllegalArgumentException("Unsupported stock type: " + type);
         }
     }
-    
+
+    // Adds a new stock item based on user input.
     public void addNewStockItem(Scanner scanner) {
         System.out.println("\n=== Add New Stock Item ===");
         System.out.println("Choose Stock Type: ");
@@ -133,7 +134,7 @@ public class CatalogManager {
         System.out.println("3. Video");
         System.out.println("4. Compact Disc");
         System.out.print("Enter your choice: ");
-        
+
         int choice = scanner.nextInt();
         scanner.nextLine(); // Clear input buffer
 
@@ -184,13 +185,13 @@ public class CatalogManager {
             System.out.println("Error creating stock item: " + e.getMessage());
         }
     }
-    
+
+    // Edits an existing stock item based on user input.
     public void editExistingStockItem(Scanner scanner) {
         System.out.println("\n=== Edit Existing Stock Item ===");
         System.out.print("Enter the ID of the item to edit: ");
         String itemId = scanner.nextLine();
 
-        // Znajdź element w katalogu
         StockItem itemToEdit = catalog.getStockList().stream()
                 .filter(item -> item.getId().equalsIgnoreCase(itemId))
                 .findFirst()
@@ -206,14 +207,9 @@ public class CatalogManager {
         System.out.println("1. Title");
         System.out.println("2. Quantity");
 
-        // Specyficzne opcje w zależności od typu
-        if (itemToEdit instanceof Book) {
+        if (itemToEdit instanceof Book || itemToEdit instanceof Journal) {
             System.out.println("3. Author");
-        } else if (itemToEdit instanceof Journal) {
-            System.out.println("3. Author");
-        } else if (itemToEdit instanceof Video) {
-            System.out.println("3. Duration (in minutes)");
-        } else if (itemToEdit instanceof CompactDiscs) {
+        } else if (itemToEdit instanceof Video || itemToEdit instanceof CompactDiscs) {
             System.out.println("3. Duration (in minutes)");
         }
 
@@ -278,6 +274,7 @@ public class CatalogManager {
         System.out.println("Item updated successfully: " + itemToEdit);
     }
 
+    // Generates a unique stock ID based on stock type and maxId.
     private String generateUniqueStockID(StockType type) {
         maxId++;
         String prefix;
@@ -300,6 +297,7 @@ public class CatalogManager {
         return prefix + String.format("%04d", maxId);
     }
 
+    // Saves the catalog to a file.
     public void saveStockToFile() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(STOCK_DATABASE))) {
             oos.writeObject(catalog.getStockList());
@@ -310,13 +308,14 @@ public class CatalogManager {
         }
     }
 
+    // Loads the catalog from a file.
     public boolean loadStockFromFile() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(STOCK_DATABASE))) {
             @SuppressWarnings("unchecked")
             List<StockItem> stockList = (List<StockItem>) ois.readObject();
             catalog.getStockList().clear();
             catalog.getStockList().addAll(stockList);
-            updateMaxId(); // Zaktualizuj maxId po załadowaniu
+            updateMaxId();
             System.out.println("Catalog loaded from: " + new java.io.File(STOCK_DATABASE).getAbsolutePath());
             System.out.println("Catalog loaded. Items in catalog: " + catalog.getStockList().size());
             return true;
@@ -328,10 +327,11 @@ public class CatalogManager {
             return false;
         }
     }
-    
+
+    // Updates the maxId to reflect the highest ID in the catalog.
     private void updateMaxId() {
         for (StockItem item : catalog.getStockList()) {
-            String id = item.getId().replaceAll("[^0-9]", ""); // Usuwa litery, pozostawia cyfry
+            String id = item.getId().replaceAll("[^0-9]", "");
             try {
                 int numericId = Integer.parseInt(id);
                 if (numericId > maxId) {
@@ -342,5 +342,4 @@ public class CatalogManager {
             }
         }
     }
-
 }

@@ -8,27 +8,34 @@
 
 // JOURNAL CLASS DEFINITION
 
-//The Journal class represents a specific type of stock item in the library system: Journals.
-//This class extends the StockItem class, adding an attribute for the author's name.
+// The Journal class represents a specific type of stock item in the library system: Journals.
+// This class extends the StockItem class, adding an attribute for the author's name.
 
 package Core;
 
 public class Journal extends StockItem {
+
+    /* PROPERTIES */
+    private static final long serialVersionUID = 1L;
     private String author;
 
+    /* METHODS */
     public Journal(String id, String title, int quantity, String author) {
         super(id, title, quantity, StockType.JOURNAL); // Use StockType enum
         this.author = author;
     }
 
+    // Gets the author of the journal.
     public String getAuthor() {
         return author;
     }
 
+    // Sets the author of the journal.
     public void setAuthor(String author) {
         this.author = author;
     }
 
+    // Returns a string representation of the journal, including the author's name.
     @Override
     public String toString() {
         return super.toString() + ", Author: " + author;
