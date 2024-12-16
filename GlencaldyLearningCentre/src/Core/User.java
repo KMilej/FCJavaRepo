@@ -1,3 +1,16 @@
+﻿// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// USER CLASS DEFINITION
+
+//This class contains the structure and behavior for a user, including attributes like username, password, account type, login history, and methods for managing user actions such as changing passwords and viewing login history.
+
+
 package Core;
 
 import java.io.Serializable;
@@ -13,7 +26,7 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private AccountType accountType;
-    private List<String> loginHistory; // Historia logowań
+    private List<String> loginHistory; // Login History 
 
     public User(String username, String password, String firstName, String lastName, AccountType accountType, String userID) {
         this.userID = userID;

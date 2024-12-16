@@ -1,3 +1,16 @@
+﻿// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// PROGRAM CLASS DEFINITION
+
+//This class contains the main entry point for the application, managing user interactions, login, catalog operations, and session handling for different user roles.
+
+
 package Core;
 
 import java.time.LocalDateTime;
@@ -12,27 +25,25 @@ public class Program {
 		Scanner scanner = new Scanner(System.in);
 		LoginSystem loginSystem = new LoginSystem();
 		List<User> users = loginSystem.getUsers();
-		
+		ReservationManager reservationManager = new ReservationManager();
 		Catalog catalog = new Catalog();
+		LoanManager loan = new LoanManager();
 		
 		CatalogManager catalogManager = new CatalogManager();
-        // Twoja logika programu
-        catalogManager.displayCatalog();
+       
+    //    catalogManager.displayCatalog();
 
-        // Na końcu programu zapisz dane
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             catalogManager.saveStockToFile();
             System.out.println("Catalog saved before exiting.");
-        })); // automatycznie zapisuje przy wylaczeniu aplikacji
+        })); // automatically saves when the program is closed
 	    
-//		catalogManager.displayCatalog();
-//		catalogManager.manageCatalog(scanner);
-		
+	
 		
 		System.out.println("Welcome to the Glencaldy Learning Centre");
 		System.out.println("To see all options please log in");
 
-		loginSystem.displayAllUsers(); // TEST
+		loginSystem.displayAllUsers(); // TEST 
 		 while (true) {
 	            System.out.println("\nWelcome to the Learning Centre!");
 	            System.out.println("1. Login");
@@ -40,7 +51,7 @@ public class Program {
 	            System.out.println("3. Exit");
 
 	            int option = getIntInput(scanner, "Choose an option: ");
-	            scanner.nextLine(); // Oczyszczenie bufora wejścia
+	            scanner.nextLine();
 	            
 	            switch (option) {
 	                case 1:
@@ -50,15 +61,14 @@ public class Program {
 	                    String password = scanner.nextLine();
 
 	                    User loggedInUser = loginSystem.validateLogin(userID, password);
-	                    if (loggedInUser != null) {
-	                        // Dodanie sformatowanego rekordu logowania
+	                    if (loggedInUser != null) {	                        
 	                        LocalDateTime now = LocalDateTime.now();
 	                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	                        String timestamp = now.format(formatter);
 	                        loggedInUser.addLoginRecord("Logged in at: " + timestamp);
 
 	                        System.out.println("Login successful! Welcome, " + loggedInUser.getFirstName() + " " + loggedInUser.getLastName());
-	                        handleUserSession(loggedInUser, loginSystem, catalog, catalogManager);
+	                        handleUserSession(loggedInUser, loginSystem, catalog, catalogManager, reservationManager, loan);
 	                    } else {
 	                        System.out.println("Invalid User ID or Password. Please try again.");
 	                    }
@@ -70,7 +80,7 @@ public class Program {
 
 	                case 3:
 	                	catalogManager.saveStockToFile();
-	                	loginSystem.saveUsersToFile(); // Zapisujemy listę użytkowników przed wyjściem
+	                	loginSystem.saveUsersToFile(); // save user when we use 3 option
 	                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
 	                    System.exit(0);
 	                    break;
@@ -81,7 +91,7 @@ public class Program {
 	        }
 	    }
 
-	private static void handleUserSession(User user, LoginSystem loginSystem, Catalog catalog, CatalogManager catalogManager) {
+	private static void handleUserSession(User user, LoginSystem loginSystem, Catalog catalog, CatalogManager catalogManager, ReservationManager reservationManager, LoanManager loan ) {
 	    Scanner scanner = new Scanner(System.in);
 
 	    while (true) {
@@ -90,14 +100,12 @@ public class Program {
 	        case FULL_MEMBER:
 	            System.out.println("\n=== Full Member Menu ===");
 	            System.out.println("1. Search Catalogue by Stock Item Title");
-	            System.out.println("2. Borrow Item");
-	            System.out.println("3. Borrow Item History");
-	            System.out.println("4. Reserve Item");
-	            System.out.println("5. Reserve Item History");
-	            System.out.println("6. Change Password");
-	            System.out.println("7. View Login History");
-	            System.out.println("8. Fine");
-	            System.out.println("9. Logout");
+	            System.out.println("2. Loan Item History");
+	            System.out.println("3. Reserve Item");
+	            System.out.println("4. Reserve Item History");
+	            System.out.println("5. Change Password");
+	            System.out.println("6. View Login History");
+	            System.out.println("7. Logout");
 	            System.out.print("Choose an option: ");
 	            
 	            int fullMemberChoice = scanner.nextInt();
@@ -121,35 +129,27 @@ public class Program {
 	                break;
 
 	                case 2:
-	                    System.out.println("Borrowing items is not implemented yet.");
+	                	loan.displayLoanHistoryForUser(user.getUserID());
 	                    break;
 
 	                case 3:
-	                    System.out.println("Borrow Item History is not implemented yet.");
+	                	reservationManager.reserveItem(scanner, user, catalogManager);
 	                    break;
 
 	                case 4:
-	                    System.out.println("Reserving items is not implemented yet.");
+	                	reservationManager.displayReservations(user);
 	                    break;
 
 	                case 5:
-	                    System.out.println("Reserve Item History is not implemented yet.");
-	                    break;
-
-	                case 6:
 	                    user.changePassword();
 	                    loginSystem.saveUsersToFile();
 	                    break;
 
-	                case 7:
+	                case 6:
 	                    user.viewLoginHistory(); // Display login history
 	                    break;
 
-	                case 8:
-	                    System.out.println("Fine details are not implemented yet.");
-	                    break;
-
-	                case 9:
+	                case 7:
 	                    System.out.println("Logging out...");
 	                    return;
 
@@ -159,19 +159,19 @@ public class Program {
 	            break;
 
 	            case STAFF_USER:
-		            System.out.println("\n=== Full Member Menu ===");
+	            	System.out.println("\n=== STAFF USER Menu ===");
 		            System.out.println("1. Search Catalogue by Stock Item Title");
-		            System.out.println("2. Borrow Item");
-		            System.out.println("3. Borrow Item History");
-		            System.out.println("4. Reserve Item");
-		            System.out.println("5. Reserve Item History");
-		            System.out.println("6. Change Password");
-		            System.out.println("7. View Login History");
-		            System.out.println("8. Fine");
-		            System.out.println("9. Logout");
+		            System.out.println("2. Loan Item History");
+		            System.out.println("3. Reserve Item");
+		            System.out.println("4. Reserve Item History");
+		            System.out.println("5. Change Password");
+		            System.out.println("6. View Login History");
+		            System.out.println("7. Logout");
 		            System.out.print("Choose an option: ");
+		            
 		            int staffChoice = scanner.nextInt();
 		            scanner.nextLine(); // Clear input buffer
+		            
 		            switch (staffChoice) {
 		            case 1:
 		                System.out.print("Enter title to search: ");
@@ -190,36 +190,32 @@ public class Program {
 		                break;
 
 		                case 2:
-		                    System.out.println("Borrowing items is not implemented yet.");
+		                	loan.displayLoanHistoryForUser(user.getUserID());
 		                    break;
 
 		                case 3:
-		                    System.out.println("Borrow Item History is not implemented yet.");
+		                	reservationManager.reserveItem(scanner, user, catalogManager);
 		                    break;
 
 		                case 4:
-		                    System.out.println("Reserving items is not implemented yet.");
+		                	reservationManager.displayReservations(user);
 		                    break;
 
 		                case 5:
-		                    System.out.println("Reserve Item History is not implemented yet.");
-		                    break;
-
-		                case 6:
 		                    user.changePassword();
 		                    loginSystem.saveUsersToFile();
 		                    break;
 
-		                case 7:
+		                case 6:
 		                    user.viewLoginHistory(); // Display login history
 		                    break;
 
-		                case 8:
-		                    System.out.println("Fine details are not implemented yet.");
-		                    break;
-
-		                case 9:
+		                case 7:
 		                    System.out.println("Logging out...");
+		                    catalogManager.saveStockToFile();
+		                	loginSystem.saveUsersToFile(); // save user when we use 3 option
+		                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
+		                    System.exit(0);
 		                    return;
 
 		                default:
@@ -234,7 +230,7 @@ public class Program {
 	                System.out.println("4. Logout");
 	                System.out.print("Choose an option: ");
 	                int casualChoice = scanner.nextInt();
-	                scanner.nextLine(); // Oczyszczenie bufora wejścia
+	                scanner.nextLine(); 
 	                switch (casualChoice) {
 	                    case 1:
 	                        System.out.print("Enter title to search: ");
@@ -256,11 +252,14 @@ public class Program {
 	                        user.changePassword();
 	                        break;
 	                    case 3:
-	                    	user.viewLoginHistory(); // Wyświetl historię logowania	                        
+	                    	user.viewLoginHistory();                        
 	                        return;
 	                    case 4:
 	                    	System.out.println("Logging out...");
-	                        loginSystem.saveUsersToFile();
+	                    	catalogManager.saveStockToFile();
+		                	loginSystem.saveUsersToFile(); // save user when we use 3 option
+		                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
+		                    System.exit(0);
 		                    break;
 	                    default:
 	                        System.out.println("Invalid option. Please try again.");
@@ -317,16 +316,20 @@ public class Program {
 
 	                case 7:
 	                    System.out.println("\nRecording a loan...");
-	                    
+	                    loan.handleLoanCreation(loan, catalogManager, loginSystem, scanner);
 	                    break;
 
 	                case 8:
 	                    System.out.println("\nRecording loan history...");
-	                    
+	                    loan.displayAllLoans();
 	                    break;
 
 	                case 9:
 	                    System.out.println("Logging out...");
+	                    catalogManager.saveStockToFile();
+	                	loginSystem.saveUsersToFile(); // save user when we use 3 option
+	                    System.out.println("Thank you for using the Learning Centre system. Goodbye!");
+	                    System.exit(0);
 	                    return;
 
 	                default:
@@ -343,7 +346,7 @@ public class Program {
 	                return scanner.nextInt();
 	            } catch (InputMismatchException e) {
 	                System.out.println("Invalid input. Please enter a number.");
-	                scanner.nextLine(); // Oczyszczenie bufora wejścia
+	                scanner.nextLine(); 
 	            }
 	        }
 	    }

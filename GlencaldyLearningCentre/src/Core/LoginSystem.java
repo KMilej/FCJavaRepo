@@ -1,3 +1,16 @@
+﻿// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// LOGIN SYSTEM CLASS DEFINITION
+
+//This class contains methods for managing user authentication, registration, and persistent storage of user data.
+
+
 package Core;
 
 import java.io.FileInputStream;

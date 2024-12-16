@@ -1,3 +1,15 @@
+﻿// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// ADMIN USER CLASS DEFINITION
+
+// This class represents an Admin user who has special privileges to manage other users in the library system.
+
 package Core;
 
 import java.util.List;

@@ -1,3 +1,16 @@
+﻿// Software Development: Object Oriented Programming
+// H171 35
+// Fife College
+
+// OUTCOMES 1-3 : Creating a Glencaldy Learning Centre computer-based system in Java Programming
+// AUTHOR: Kamil Milej
+// DATE: 12/12/2024
+
+// STOCK ITEM CLASS DEFINITION
+
+//This class contains the structure for stock items, including attributes like ID, title, quantity, and type, with methods to manage and represent these attributes.
+
+
 package Core;
 
 import java.io.Serializable;
@@ -8,6 +21,7 @@ public class StockItem implements Serializable {
     private String title;
     private int quantity;
     private StockType type; // Enum field for stock type
+    
 
     // Constructor
     public StockItem(String id, String title, int quantity, StockType type) {
